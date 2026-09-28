@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Study Buddy - Intelligent Learning Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Toast Notification Center -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Global Modal Container -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-content" class="modal-card">
+      <button id="modal-close-btn" class="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- AUTH VIEW (Login / Register) -->
+  <div id="view-auth" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <span class="logo-icon">🧠</span>
+          <span class="logo-text">AI Study Buddy</span>
+        </div>
+        <p class="auth-subtitle">Your personal AI academic learning companion</p>
+      </div>
+
+      <!-- Login Box -->
+      <div id="login-box">
+        <h2 class="auth-form-title">Welcome Back</h2>
+        <p class="auth-form-desc">Log in to continue your learning journey</p>
+        <form id="form-login" class="auth-form">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" required placeholder="alex@university.edu" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="btn-login-submit">
+            <span>Log In</span>
+          </button>
+          <div style="margin: 14px 0 6px; text-align: center;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">or explore pre-loaded demo</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-block" id="btn-demo-login" style="border-color: var(--primary); color: var(--primary); font-weight: 700;">
+            <span>⚡ 1-Click Demo Account (Alex Johnson)</span>
+          </button>
+        </form>
+        <div class="auth-footer">
+          Don't have an account? <a href="#" id="link-to-register">Register here</a>
+        </div>
+      </div>
+
+      <!-- Register Box -->
+      <div id="register-box" class="hidden">
+        <h2 class="auth-form-title">Create Account</h2>
+        <p class="auth-form-desc">Join AI Study Buddy to boost your academic performance</p>
+        <form id="form-register" class="auth-form">
+          <div class="form-group">
+            <label for="register-name">Full Name</label>
+            <input type="text" id="register-name" required placeholder="Alex Johnson" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="register-email">Email Address</label>
+            <input type="email" id="register-email" required placeholder="alex@university.edu" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="register-password">Password (minimum 6 characters)</label>
+            <input type="password" id="register-password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="btn-register-submit">
+            <span>Create Student Account</span>
+          </button>
+        </form>
+        <div class="auth-footer">
+          Already have an account? <a href="#" id="link-to-login">Log In here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SHELL (Sidebar + Main Content) -->
+  <div id="app-shell" class="app-layout hidden">
+    <!-- Mobile Navigation Toggle Header -->
+    <header class="mobile-header">
+      <button id="btn-sidebar-toggle" class="btn-icon" aria-label="Toggle Menu">
+        <span class="hamburger-icon">☰</span>
+      </button>
+      <div class="brand">
+        <span class="logo-icon">🧠</span>
+        <span class="brand-name">AI Study Buddy</span>
+      </div>
+      <div class="mobile-user-avatar" id="mobile-user-initials">S</div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <aside id="app-sidebar" class="app-sidebar">
+      <div class="sidebar-brand">
+        <span class="logo-icon">🧠</span>
+        <div class="brand-text">
+          <span class="app-title">AI Study Buddy</span>
+          <span class="app-badge">Student Edition</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#materials" class="nav-item" data-view="materials">
+          <span class="nav-icon">📝</span>
+          <span class="nav-label">Study Materials</span>
+        </a>
+        <a href="#subjects" class="nav-item" data-view="subjects">
+          <span class="nav-icon">📚</span>
+          <span class="nav-label">Subjects</span>
+        </a>
+        <a href="#chat" class="nav-item" data-view="chat">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-label">AI Study Buddy</span>
+        </a>
+        <a href="#summaries" class="nav-item" data-view="summaries">
+          <span class="nav-icon">📄</span>
+          <span class="nav-label">AI Summarise</span>
+        </a>
+        <a href="#flashcards" class="nav-item" data-view="flashcards">
+          <span class="nav-icon">🃏</span>
+          <span class="nav-label">Flashcards</span>
+        </a>
+        <a href="#quiz" class="nav-item" data-view="quiz">
+          <span class="nav-icon">❓</span>
+          <span class="nav-label">Quizzes</span>
+        </a>
+        <a href="#study-plan" class="nav-item" data-view="study-plan">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Study Plan</span>
+        </a>
+        <a href="#progress" class="nav-item" data-view="progress">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Progress</span>
+        </a>
+        <a href="#profile" class="nav-item" data-view="profile">
+          <span class="nav-icon">👤</span>
+          <span class="nav-label">Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-brief">
+          <div class="user-avatar" id="sidebar-user-avatar">S</div>
+          <div class="user-info">
+            <span class="user-name" id="sidebar-user-name">Student</span>
+            <span class="user-role" id="sidebar-user-role">student</span>
+          </div>
+        </div>
+        <button id="btn-logout" class="btn-logout" title="Logout">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-label">Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="app-main">
+      <div class="main-header">
+        <div class="header-breadcrumbs">
+          <h1 id="page-title">Dashboard</h1>
+          <p id="page-description">Welcome back! Track your daily learning activities and AI study tools.</p>
+        </div>
+        <div class="header-actions" id="header-actions">
+          <!-- Dynamic Action Buttons per View -->
+        </div>
+      </div>
+
+      <div class="content-scrollable">
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="content-view active">
+          <!-- Welcome Hero Banner -->
+          <div class="welcome-card">
+            <div class="welcome-text">
+              <h2 id="dash-welcome-text">Welcome to AI Study Buddy!</h2>
+              <p>Upload your course notes, generate smart summaries, test your recall with interactive 3D flashcards, take AI quizzes, and plan your exam schedule.</p>
+              <div class="welcome-buttons">
+                <button class="btn btn-primary" id="dash-btn-add-material">➕ Add Study Material</button>
+                <button class="btn btn-secondary" id="dash-btn-ask-ai">🤖 Ask AI Tutor</button>
+              </div>
+            </div>
+            <div class="welcome-badge-icon">🎓</div>
+          </div>
+
+          <!-- Functional Dashboard Statistics (9 Live Metrics from MongoDB) -->
+          <div class="stats-grid">
+            <div class="stat-card" onclick="App.navigateTo('materials')" style="cursor: pointer;">
+              <div class="stat-icon bg-indigo">📝</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-materials">0</span>
+                <span class="stat-label">Total Study Materials</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('subjects')" style="cursor: pointer;">
+              <div class="stat-icon bg-blue" style="background: #e0f2fe; color: #0369a1;">📚</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-subjects">0</span>
+                <span class="stat-label">Total Subjects</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('summaries')" style="cursor: pointer;">
+              <div class="stat-icon bg-blue">📄</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-summaries">0</span>
+                <span class="stat-label">AI Summaries</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('flashcards')" style="cursor: pointer;">
+              <div class="stat-icon bg-amber">🃏</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-fc-studied">0</span>
+                <span class="stat-label">Flashcards Studied</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('quiz')" style="cursor: pointer;">
+              <div class="stat-icon bg-emerald">❓</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-quizzes">0</span>
+                <span class="stat-label">Quizzes Taken</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('quiz')" style="cursor: pointer;">
+              <div class="stat-icon bg-rose">🎯</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-score">0%</span>
+                <span class="stat-label">Average Quiz Score</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('study-plan')" style="cursor: pointer;">
+              <div class="stat-icon bg-purple">📅</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-tasks">0</span>
+                <span class="stat-label">Study Plan Tasks</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('study-plan')" style="cursor: pointer;">
+              <div class="stat-icon bg-emerald" style="background: #ecfdf5; color: #059669;">✅</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-tasks-completed">0</span>
+                <span class="stat-label">Completed Tasks</span>
+              </div>
+            </div>
+            <div class="stat-card" onclick="App.navigateTo('progress')" style="cursor: pointer;">
+              <div class="stat-icon bg-emerald" style="background: #f0fdf4; color: #15803d;">📈</div>
+              <div class="stat-details">
+                <span class="stat-value" id="dash-stat-progress">0%</span>
+                <span class="stat-label">Overall Study Progress</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clean Progress Chart Card -->
+          <div class="panel-card mb-4" style="margin-bottom: 24px;">
+            <div class="panel-header">
+              <div>
+                <h3>📈 Weekly Study Activity & Progress</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">Daily study tasks, summaries, quizzes & active recall sessions</p>
+              </div>
+              <span class="badge" id="chart-overall-badge">Active Learner</span>
+            </div>
+            <div id="dashboard-progress-chart" style="width: 100%; height: 180px; display: flex; align-items: flex-end; gap: 16px; padding: 10px 0;">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Dedicated Study Buddy Modules Section (All 8 Modules) -->
+          <div class="panel-card mb-4" style="margin-bottom: 28px;">
+            <div class="panel-header">
+              <div>
+                <h3>🎓 Academic Learning Modules</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">Direct access to all your AI study features</p>
+              </div>
+            </div>
+            <div class="modules-grid">
+              <div class="module-card" onclick="App.navigateTo('subjects')">
+                <div class="module-icon" style="background: #e0e7ff; color: #4338ca;">📚</div>
+                <div class="module-info">
+                  <h4>Subjects</h4>
+                  <p>Curriculum disciplines, course topics & materials</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('materials')">
+                <div class="module-icon" style="background: #dbeafe; color: #1d4ed8;">📝</div>
+                <div class="module-info">
+                  <h4>Study Materials</h4>
+                  <p>Upload, search & organize lecture notes and textbooks</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('chat')">
+                <div class="module-icon" style="background: #fef3c7; color: #b45309;">🤖</div>
+                <div class="module-info">
+                  <h4>AI Study Buddy</h4>
+                  <p>Real-time academic AI assistant & concept tutor</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('summaries')">
+                <div class="module-icon" style="background: #ede9fe; color: #6d28d9;">📄</div>
+                <div class="module-info">
+                  <h4>Summaries</h4>
+                  <p>AI-synthesized key takeaways & core definitions</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('flashcards')">
+                <div class="module-icon" style="background: #fce7f3; color: #be185d;">🃏</div>
+                <div class="module-info">
+                  <h4>Flashcards</h4>
+                  <p>Active recall revision with 3D flip card interaction</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('quiz')">
+                <div class="module-icon" style="background: #d1fae5; color: #047857;">❓</div>
+                <div class="module-info">
+                  <h4>Quiz</h4>
+                  <p>Take AI multiple-choice exams & review answers</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('study-plan')">
+                <div class="module-icon" style="background: #ffedd5; color: #c2410c;">📅</div>
+                <div class="module-info">
+                  <h4>Study Plan</h4>
+                  <p>Personalized day-by-day roadmap targeting exam date</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+
+              <div class="module-card" onclick="App.navigateTo('progress')">
+                <div class="module-icon" style="background: #e0f2fe; color: #0369a1;">📊</div>
+                <div class="module-info">
+                  <h4>Progress</h4>
+                  <p>Mastery breakdown, quiz accuracy & learning activity</p>
+                </div>
+                <span class="module-arrow">→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Recent Activity Layout -->
+          <div class="dash-two-column">
+            <!-- Quick Actions -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>⚡ Quick Actions</h3>
+              </div>
+              <div class="quick-action-grid">
+                <div class="qa-item" id="qa-add-material">
+                  <span class="qa-icon">📝</span>
+                  <div class="qa-body">
+                    <strong>Add Material</strong>
+                    <span>Upload or paste course notes</span>
+                  </div>
+                </div>
+                <div class="qa-item" id="qa-gen-summary">
+                  <span class="qa-icon">📄</span>
+                  <div class="qa-body">
+                    <strong>Generate Summary</strong>
+                    <span>Extract key takeaways with AI</span>
+                  </div>
+                </div>
+                <div class="qa-item" id="qa-gen-flashcards">
+                  <span class="qa-icon">🃏</span>
+                  <div class="qa-body">
+                    <strong>Generate Flashcards</strong>
+                    <span>Create memory cards with Gemini</span>
+                  </div>
+                </div>
+                <div class="qa-item" id="qa-gen-quiz">
+                  <span class="qa-icon">❓</span>
+                  <div class="qa-body">
+                    <strong>Generate Quiz</strong>
+                    <span>Test your knowledge with MCQs</span>
+                  </div>
+                </div>
+                <div class="qa-item" id="qa-gen-plan">
+                  <span class="qa-icon">📅</span>
+                  <div class="qa-body">
+                    <strong>Create Study Plan</strong>
+                    <span>Build personalized exam schedule</span>
+                  </div>
+                </div>
+                <div class="qa-item" id="qa-ask-ai">
+                  <span class="qa-icon">🤖</span>
+                  <div class="qa-body">
+                    <strong>Ask AI Buddy</strong>
+                    <span>Instant academic explanations</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity Timeline -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>🕒 Recent Activity</h3>
+              </div>
+              <div id="dash-recent-activities" class="activity-timeline">
+                <div class="empty-state-sm">Loading recent learning activities...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. SUBJECTS VIEW -->
+        <section id="view-subjects" class="content-view">
+          <div class="section-toolbar">
+            <div class="search-box">
+              <input type="text" id="subjects-search" placeholder="Search subjects...">
+            </div>
+            <button class="btn btn-primary" id="btn-open-create-subject-modal">➕ Add Subject</button>
+            <button class="btn btn-secondary" id="btn-seed-default-subjects" title="Load Standard Academic Subjects">⚡ Load Default Subjects</button>
+            <button class="btn btn-secondary" id="btn-subjects-add-material">📝 Add Material to Subject</button>
+          </div>
+          <div id="subjects-grid" class="subjects-grid">
+            <!-- Rendered by subjects.js -->
+          </div>
+        </section>
+
+        <!-- 3. STUDY MATERIALS VIEW -->
+        <section id="view-materials" class="content-view">
+          <div class="section-toolbar">
+            <div class="search-box">
+              <input type="text" id="materials-search" placeholder="Search by title, subject or content...">
+            </div>
+            <div class="filter-box">
+              <select id="materials-subject-filter">
+                <option value="">All Subjects</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btn-open-add-material-modal">➕ New Study Material</button>
+            <button class="btn btn-secondary" id="btn-seed-default-materials" title="Add comprehensive study materials for all subjects">⚡ Load Course Materials</button>
+          </div>
+          <div id="materials-list" class="materials-list">
+            <!-- Rendered by notes.js -->
+          </div>
+        </section>
+
+        <!-- 4. AI STUDY BUDDY CHAT VIEW -->
+        <section id="view-chat" class="content-view">
+          <div class="chat-container">
+            <div class="chat-sidebar">
+              <h3>Academic Starters</h3>
+              <p class="chat-tip">Select a question or ask any topic:</p>
+              <div class="starter-prompts">
+                <button class="prompt-chip" data-prompt="Explain the difference between TCP and UDP with real-world examples.">Explain TCP vs UDP</button>
+                <button class="prompt-chip" data-prompt="What is the concept of Virtual Memory and Paging in Operating Systems?">Virtual Memory & Paging</button>
+                <button class="prompt-chip" data-prompt="How do database transactions maintain ACID properties?">ACID in Databases</button>
+                <button class="prompt-chip" data-prompt="What is Time Complexity and Big O notation with standard search algorithms?">Big O Notation & Complexity</button>
+                <button class="prompt-chip" data-prompt="Give me 5 high-yield exam tips for studying computer science effectively.">Exam Revision Tips</button>
+              </div>
+              <div class="chat-controls">
+                <button class="btn btn-secondary btn-block" id="btn-clear-chat">Clear History</button>
+              </div>
+            </div>
+
+            <div class="chat-main">
+              <div id="chat-messages" class="chat-messages">
+                <div class="chat-bubble ai">
+                  <div class="chat-avatar">🤖</div>
+                  <div class="chat-content">
+                    <p>Hello! I am your <strong>AI Study Buddy</strong>. I am here to help explain complex concepts, solve doubts, break down formulas, and help you ace your exams. What are we studying today?</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-input-area">
+                <textarea id="chat-input" rows="2" placeholder="Ask an academic question or request an explanation... (Press Enter to send, Shift+Enter for newline)"></textarea>
+                <button class="btn btn-primary" id="btn-send-chat">
+                  <span>Send</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. SUMMARIES VIEW -->
+        <section id="view-summaries" class="content-view">
+          <div class="section-toolbar">
+            <button class="btn btn-primary" id="btn-open-gen-summary-modal">✨ Generate AI Summary</button>
+          </div>
+          <div id="summaries-list" class="summaries-grid">
+            <!-- Rendered by summary.js -->
+          </div>
+        </section>
+
+        <!-- 6. FLASHCARDS VIEW -->
+        <section id="view-flashcards" class="content-view">
+          <div class="section-toolbar">
+            <div class="filter-box">
+              <select id="flashcard-material-filter">
+                <option value="">All Materials</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btn-open-gen-flashcards-modal">✨ Generate Flashcards</button>
+          </div>
+
+          <!-- Flashcard Deck Area -->
+          <div class="flashcard-deck-container">
+            <div id="flashcard-scene" class="flashcard-scene">
+              <!-- 3D Card is inserted here -->
+              <div class="empty-state">
+                <div class="empty-icon">🃏</div>
+                <h3>No Flashcards Loaded</h3>
+                <p>Select a material or generate flashcards using Gemini AI.</p>
+                <button class="btn btn-primary" id="btn-empty-gen-fc">Generate Flashcards</button>
+              </div>
+            </div>
+
+            <!-- Flashcard Navigation Controls -->
+            <div id="flashcard-controls" class="flashcard-controls hidden" style="flex-wrap: wrap; justify-content: center; gap: 10px;">
+              <button class="btn btn-secondary" id="btn-fc-prev">⬅ Previous</button>
+              <div class="fc-counter-badge" id="fc-counter">Card 1 of 5</div>
+              <button class="btn btn-secondary" id="btn-fc-flip">🔄 Flip Card (Space)</button>
+              <button class="btn btn-primary" id="btn-fc-study" style="background: #059669;">✅ Mark as Studied</button>
+              <button class="btn btn-secondary" id="btn-fc-next">Next ➡</button>
+            </div>
+            <div id="fc-studied-indicator" style="margin-top: 10px; font-size: 0.8125rem; color: var(--text-muted);">
+              <!-- Studied status indicator -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. QUIZ VIEW -->
+        <section id="view-quiz" class="content-view">
+          <div class="section-toolbar">
+            <button class="btn btn-primary" id="btn-open-gen-quiz-modal">✨ Generate New AI Quiz</button>
+          </div>
+
+          <!-- Active Quiz Container -->
+          <div id="quiz-runner-container" class="quiz-runner-container hidden">
+            <div class="quiz-runner-card">
+              <div class="quiz-runner-header">
+                <div>
+                  <h2 id="active-quiz-title">Quiz Title</h2>
+                  <span class="badge" id="active-quiz-subject">Subject</span>
+                </div>
+                <div class="quiz-step-counter" id="active-quiz-counter">Question 1 of 5</div>
+              </div>
+
+              <!-- Question Container -->
+              <div class="quiz-question-box">
+                <h3 id="active-quiz-question-text">Question text goes here?</h3>
+                <div id="active-quiz-options" class="quiz-options-list">
+                  <!-- Radio options -->
+                </div>
+              </div>
+
+              <div class="quiz-runner-footer">
+                <button class="btn btn-secondary" id="btn-quiz-prev">Previous</button>
+                <button class="btn btn-secondary" id="btn-quiz-next">Next</button>
+                <button class="btn btn-primary hidden" id="btn-quiz-submit">Submit Quiz</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz Result Screen -->
+          <div id="quiz-result-container" class="quiz-result-container hidden">
+            <!-- Rendered after submit -->
+          </div>
+
+          <!-- Existing Quizzes List & Past Results History -->
+          <div id="quizzes-history-section">
+            <h3 class="section-subtitle" style="font-size: 1.125rem; font-weight: 700; margin-bottom: 12px;">Generated Quizzes</h3>
+            <div id="quizzes-list" class="quizzes-grid">
+              <!-- Rendered by quiz.js -->
+            </div>
+
+            <!-- Previous Quiz Results History -->
+            <div class="panel-card" style="margin-top: 32px;">
+              <div class="panel-header">
+                <h3>📜 Previous Quiz Results & Attempts</h3>
+                <span style="font-size: 0.8125rem; color: var(--text-muted);">Scores stored in MongoDB</span>
+              </div>
+              <div id="quiz-attempts-history" class="activity-timeline">
+                <div class="empty-state-sm">No quiz attempts recorded yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. STUDY PLAN VIEW -->
+        <section id="view-study-plan" class="content-view">
+          <div class="section-toolbar">
+            <button class="btn btn-secondary" id="btn-open-create-task-modal">➕ Schedule Study Task</button>
+            <button class="btn btn-primary" id="btn-open-gen-plan-modal">✨ Generate AI Study Plan</button>
+          </div>
+
+          <!-- Today's Study Tasks Checklist Section -->
+          <div class="panel-card mb-4" style="margin-bottom: 24px; border-left: 4px solid var(--primary);">
+            <div class="panel-header">
+              <div>
+                <h3>📋 Today's Study Tasks</h3>
+                <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">Mark tasks completed to track your daily progress</p>
+              </div>
+              <span class="badge" id="today-tasks-counter">0 / 0 Completed</span>
+            </div>
+            <div id="today-tasks-list" style="display: flex; flex-direction: column; gap: 10px;">
+              <div class="empty-state-sm">No study tasks scheduled for today yet.</div>
+            </div>
+          </div>
+
+          <h3 class="section-subtitle" style="font-size: 1.125rem; font-weight: 700; margin: 20px 0 12px;">All Study Plans & Roadmaps</h3>
+          <div id="study-plans-list" class="study-plans-container">
+            <!-- Rendered by studyPlan.js -->
+          </div>
+        </section>
+
+        <!-- 9. PROGRESS VIEW -->
+        <section id="view-progress" class="content-view">
+          <div class="progress-container">
+            <!-- Metric Overview Cards -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon bg-indigo">📝</div>
+                <div class="stat-details">
+                  <span class="stat-value" id="prog-materials">0</span>
+                  <span class="stat-label">Study Materials</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-blue">📄</div>
+                <div class="stat-details">
+                  <span class="stat-value" id="prog-summaries">0</span>
+                  <span class="stat-label">Summaries</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-amber">🃏</div>
+                <div class="stat-details">
+                  <span class="stat-value" id="prog-flashcards">0</span>
+                  <span class="stat-label">Flashcards</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-emerald">🎯</div>
+                <div class="stat-details">
+                  <span class="stat-value" id="prog-score">0%</span>
+                  <span class="stat-label">Average Score</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Performance Bars & Subject Distribution -->
+            <div class="dash-two-column">
+              <div class="panel-card">
+                <div class="panel-header">
+                  <h3>🎯 Quiz Mastery Breakdown</h3>
+                </div>
+                <div class="progress-bars-box">
+                  <div class="bar-group">
+                    <div class="bar-info">
+                      <span>Quiz Accuracy</span>
+                      <strong id="bar-quiz-accuracy-text">0%</strong>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill bg-emerald" id="bar-quiz-accuracy" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar-info">
+                      <span>Active Recall Flashcards</span>
+                      <strong id="bar-flashcards-text">0 created</strong>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill bg-amber" id="bar-flashcards" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar-info">
+                      <span>Course Materials Covered</span>
+                      <strong id="bar-materials-text">0 documents</strong>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill bg-indigo" id="bar-materials" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-card">
+                <div class="panel-header">
+                  <h3>📚 Subjects Studied</h3>
+                </div>
+                <div id="prog-subjects-list" class="subjects-tags-list">
+                  <p class="empty-state-sm">No subjects recorded yet.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Full Activity Timeline -->
+            <div class="panel-card mt-4">
+              <div class="panel-header">
+                <h3>📜 Complete Learning Log</h3>
+              </div>
+              <div id="prog-full-timeline" class="activity-timeline">
+                <div class="empty-state-sm">No activity recorded yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. PROFILE VIEW -->
+        <section id="view-profile" class="content-view">
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="profile-avatar-lg" id="profile-avatar">S</div>
+              <div class="profile-details">
+                <h2 id="profile-name">Student Name</h2>
+                <p id="profile-email">student@example.com</p>
+                <div class="profile-badges">
+                  <span class="badge badge-primary" id="profile-role">Student</span>
+                  <span class="badge badge-secondary" id="profile-joined">Joined recently</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-stats-row">
+              <div class="profile-stat-box">
+                <strong id="prof-stat-materials">0</strong>
+                <span>Materials</span>
+              </div>
+              <div class="profile-stat-box">
+                <strong id="prof-stat-quizzes">0</strong>
+                <span>Quizzes</span>
+              </div>
+              <div class="profile-stat-box">
+                <strong id="prof-stat-flashcards">0</strong>
+                <span>Flashcards</span>
+              </div>
+              <div class="profile-stat-box">
+                <strong id="prof-stat-plans">0</strong>
+                <span>Plans</span>
+              </div>
+            </div>
+
+            <div class="profile-actions">
+              <button class="btn btn-secondary" id="btn-profile-logout">🚪 Sign Out</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/subjects.js"></script>
+  <script src="/js/notes.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/summary.js"></script>
+  <script src="/js/flashcards.js"></script>
+  <script src="/js/quiz.js"></script>
+  <script src="/js/studyPlan.js"></script>
+  <script src="/js/progress.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
